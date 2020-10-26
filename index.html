@@ -1,0 +1,614 @@
+<html>
+  <head>
+    <title>A-Frame Project: Kaas maken</title>
+    <!-- A-Frame 0.8.2 Latest Version -->
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script> 
+    <!-- A-Frame Super Hands Component -->
+    <script src="https://unpkg.com/super-hands/dist/super-hands.min.js"></script> 
+    <!-- A-Frame Physics System Component -->
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.1.2/dist/aframe-physics-system.min.js"></script>
+    <!-- A-Frame Physics System Extra Component -->
+    <script src="https://unpkg.com/aframe-physics-extras/dist/aframe-physics-extras.min.js"></script>
+    <!-- A-Frame Event Set Component -->
+    <script src="https://unpkg.com/aframe-event-set-component@^4.1.1/dist/aframe-event-set-component.min.js"></script>
+    <!-- A-Frame Enviroment Component -->
+    <script src="https://rawgit.com/feiss/aframe-environment-component/master/dist/aframe-environment-component.min.js"></script>
+    <!-- A-Frame Extra Component -->
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v5.0.0/dist/aframe-extras.min.js"></script>
+    <!-- A-Frame GUI Component -->
+    <script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js"></script>
+    <!-- Aframe Spe Particles -->
+    <script src="https://unpkg.com/aframe-spe-particles-component@^1.0.4/dist/aframe-spe-particles-component.min.js"></script>
+    <!-- Aframe Animation Component -->
+    <script src="https://unpkg.com/aframe-animation-component/dist/aframe-animation-component.min.js"></script>
+    <!-- Eigen Javascript -->
+    <script src="main.js"></script> 
+  </head>
+  <body>
+    <a-scene id="scene" physics antialias="true" environment="preset: default; flatShading: false; ground: none; skyType: gradient">
+      <a-assets>
+        <!-- Basis functionaliteiten -->
+        
+        <!-- Controller rechts -->
+        <a-mixin id="controllers-right" vive-controls="hand: right"
+                 oculus-touch-controls="hand: right"
+                 windows-motion-controls="hand: right"
+                 gearvr-controls daydream-controls
+                 oculus-go-controls>
+        </a-mixin>
+        
+        <!-- Controller links (indien de person linkshandig is -->
+        <a-mixin id="controllers-left" vive-controls="hand: left"
+                 oculus-touch-controls="hand: left"
+                 windows-motion-controls="hand: left"
+                 gearvr-controls daydream-controls
+                 oculus-go-controls>
+        </a-mixin>
+        
+        <!-- Raycaster -->
+        <a-mixin id="point" raycaster="showLine: true; objects:.pickableItem"
+                 collision-filter="collisionForces: false"
+                 static-body="shape: sphere; sphereRadius: 0.001"
+                 super-hands="colliderEvent: raycaster-intersection;
+                              colliderEventProperty: els;
+                              colliderEndEvent:raycaster-intersection-cleared;
+                              colliderEndEventProperty: clearedEls;"></a-mixin>
+        <!-- Checkpoint System -->
+        <a-mixin id="checkpoint"
+                 static-body
+                 hoverable clickable
+                 event-set__hoveron="_event: hover-start; material.opacity: 0.7; transparent: true"
+                 event-set__hoveroff="_event: hover-end; material.opacity: 1; transparent: false"
+      ></a-mixin>
+        
+        <a-mixin id="emmer-obj" 
+                 static-body
+                 src="Objects/Bucket.obj"
+        ></a-mixin>
+                <a-mixin id="emmer-mtl" 
+                 src="Objects/Bucket.mtl"
+        ></a-mixin>
+        <a-mixin id="uier-obj" static-body grabbable hoverable
+                 src="Objects/Uier.obj"
+                 ></a-mixin>
+        <a-mixin id="koe-melk" static-body grabbable hoverable
+                 event-set__grabon="_event: grab-start; spe-particles.enabled: true"
+                 event-set__graboff="_event: grab-end; spe-particles.enabled: true"
+                 ></a-mixin>          
+      </a-assets>
+      
+      <a-assets>
+        <a-asset-item id="voorkant-obj" src="Objects/Voorkant.obj"></a-asset-item>
+        <a-asset-item id="voorkant-mtl" src="Objects/Voorkant.mtl"></a-asset-item>
+        <a-asset-item id="deur-obj" src="Objects/deur.obj"></a-asset-item>
+        <a-asset-item id="deur-mtl" src="Objects/deur.mtl"></a-asset-item>
+        <a-asset-item id="trap-obj" src="Objects/trap.obj"></a-asset-item>
+        <a-asset-item id="trap-mtl" src="Objects/trap.mtl"></a-asset-item>
+        <a-asset-item id="muren-obj" src="Objects/muren.obj"></a-asset-item>
+        <a-asset-item id="muren-mtl" src="Objects/muren.mtl"></a-asset-item>
+        <a-asset-item id="fles-obj" src="Objects/fles.obj"></a-asset-item>
+        <a-asset-item id="fles-mtl" src="Objects/fles.mtl"></a-asset-item>
+        <a-asset-item id="cow-obj" src="Objects/cow.obj"></a-asset-item>
+        <a-asset-item id="cow-mtl" src="Objects/cow.mtl"></a-asset-item>
+        <a-asset-item id="wrongelvork-obj" src="Objects/wrongelvork.obj"></a-asset-item>
+        <a-asset-item id="wrongelvork-mtl" src="Objects/wrongelvork.mtl"></a-asset-item>
+        <a-asset-item id="tobbebruin-obj" src="Objects/tobbebruin.obj"></a-asset-item>
+        <a-asset-item id="tobbebruin-mtl" src="Objects/tobbebruin.mtl"></a-asset-item>
+        <a-asset-item id="onoff-obj" src="Objects/onoff.obj"></a-asset-item>
+        <a-asset-item id="onoff-mtl" src="Objects/onoff.mtl"></a-asset-item>
+        <a-asset-item id="aan-obj" src="Objects/aan.obj"></a-asset-item>
+        <a-asset-item id="aan-mtl" src="Objects/aan.mtl"></a-asset-item>
+        <a-asset-item id="uit-obj" src="Objects/uit.obj"></a-asset-item>
+        <a-asset-item id="uit-mtl" src="Objects/uit.mtl"></a-asset-item>
+        <a-asset-item id="hek-obj" src="Objects/hek.obj"></a-asset-item>
+        <a-asset-item id="hek-mtl" src="Objects/hek.mtl"></a-asset-item>
+        <a-asset-item id="barrel-obj" src="Objects/barrel.obj"></a-asset-item>
+        <a-asset-item id="barrel-mtl" src="Objects/barrel.mtl"></a-asset-item>
+        <a-asset-item id="boer-obj" src="Objects/boer.obj"></a-asset-item>
+        <a-asset-item id="boer-mtl" src="Objects/boer.mtl"></a-asset-item>
+        <a-asset-item id="hand-obj" src="Objects/hand.obj"></a-asset-item>
+        <a-asset-item id="hand-mtl" src="Objects/hand.mtl"></a-asset-item>
+        <!-- kaaspers-->
+        <a-asset-item id="start-obj" src="Objects/onoff.obj"></a-asset-item>
+        <a-asset-item id="start-mtl" src="Objects/onoff.mtl"></a-asset-item>
+        <a-asset-item id="persbank-obj" src="Objects/persbank1.obj"></a-asset-item>
+        <a-asset-item id="persbank-mtl" src="Objects/persbank1.mtl"></a-asset-item>
+        <a-asset-item id="kaaspers-obj" src="Objects/pers.obj"></a-asset-item>
+        <a-asset-item id="kaaspers-mtl" src="Objects/pers.mtl"></a-asset-item>
+        <a-asset-item id="haybale-obj" src="Objects/HayBale.obj"></a-asset-item>
+        <a-asset-item id="haybale-mtl" src="Objects/HayBale.mtl"></a-asset-item>
+        <a-asset-item id="tractor-obj" src="Objects/tractor.obj"></a-asset-item>
+        <a-asset-item id="tractor-mtl" src="Objects/tractor.mtl"></a-asset-item>
+        <!-- droogrek-->
+        <a-asset-item id="droogrek-obj" src="Objects/droogrekvol.obj"></a-asset-item>
+        <a-asset-item id="droogrek-mtl" src="Objects/droogrekvol.mtl"></a-asset-item>
+        <a-asset-item id="droogrekmissend-obj" src="Objects/droogrekmist.obj"></a-asset-item>
+        <a-asset-item id="droogrekmissend-mtl" src="Objects/droogrekmist.mtl"></a-asset-item>
+        <!-- kaasvat-->
+        <a-asset-item id="kaasvat-obj" src="Objects/vat1.obj"></a-asset-item>
+        <a-asset-item id="kaasvat-mtl" src="Objects/vat1.mtl"></a-asset-item>
+        <!-- pekelbad-->
+        <a-asset-item id="pekelbad-obj" src="Objects/pekelbad.obj"></a-asset-item>
+        <a-asset-item id="pekelbad-mtl" src="Objects/pekelbad.mtl"></a-asset-item>
+        <!-- handleidingbord-->
+        <a-asset-item id="handleiding-obj" src="Objects/bord.obj"></a-asset-item>
+        <a-asset-item id="handleiding-mtl" src="Objects/bord.mtl"></a-asset-item>
+        <!-- Startknop begin -->
+        <a-asset-item id="startbegin-obj" src="Objects/startbegin.obj"></a-asset-item>
+        <a-asset-item id="startbegin-mtl" src="Objects/startbegin.mtl"></a-asset-item>
+        <!-- Kaas -->
+        <a-asset-item id="kaas-obj" src="Objects/kaas.obj"></a-asset-item>
+        <a-asset-item id="kaas-mtl" src="Objects/kaas.mtl"></a-asset-item>
+      </a-assets>
+
+      <a-entity position="-5 0 3" rotation="0 90 0" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate">
+        <!-- Camera -->
+        <a-camera id="camera" positon="0 1.6 0">
+           <a-cursor color="black"></a-cursor> 
+        </a-camera>
+        <!-- Rechterhand -->
+        <a-entity id="rhand" mixin="controllers-right point"></a-entity>
+        <!-- Linkerhand -->
+        <a-entity id="lhand" mixin="controllers-left point"></a-entity>
+      </a-entity>
+      
+      <!-- Alle geluiden -->
+      <a-sound id="melkgeluid" src="src: url(Geluiden/Minecraft_Potion_Drinking_Sound_Effect.mp3); on: click" autoplay="false" loop="true" position="0.2 0.6 -1.75"></a-sound>
+      
+        <a-entity class="pickableItem" id="scene1" visible="true">
+      <a-box id="box" hoverable class="pickableItem" position="-9 0 3" scale="0.5 0.5 0.5" rotation="0 0 0" obj-model="obj: #startbegin-obj; mtl: #startbegin-mtl"></a-box>
+        <a-plane width="6" height="6" position="-10 3 3" rotation="0 90 0" transparent="true" src="Plaatjes/KaasLogo.png"></a-plane>
+      <a-sky color="#efcc1c"></a-sky>
+      </a-entity>
+      
+      <a-plane rotation="0 180 0" width="2.5" height="4" position="-13 1 6.5" color="black" opacity="0.5">
+        <a-text position="-1 1.5 0" align="left" wrap-count="50" value="Welkom op mijn boederij."></a-text>
+        <a-text position="-1.2 1 0" align="left" wrap-count="50" value="Vandaag gaan we kaas maken."></a-text>
+        <a-text position="-1.1 0.5 0" align="left" wrap-count="50" value="Kijk goed op het bord."></a-text>
+        <a-text position="-1.1 0 0" align="left" wrap-count="50" value="Succes."></a-text>
+      </a-plane>
+      
+      <!-- Schuur componenten -->
+      <a-entity scale="7.7 3.2 1" position="38 -0.7 -8" obj-model="obj: #voorkant-obj; mtl: #voorkant-mtl"></a-entity>
+      <a-entity scale="7.7 3.2 1" position="38 -1 13" obj-model="obj: #voorkant-obj; mtl: #voorkant-mtl"></a-entity>
+      <a-entity scale="7.7 3.2 6" position="38 -1 7" obj-model="obj: #muren-obj; mtl: #muren-mtl"></a-entity>
+      <a-entity scale="5 4 1" position="23 -1 -8" obj-model="obj: #deur-obj; mtl: #deur-mtl"></a-entity>
+      <a-box width="10" height="5" depth="0.5" color="#4f000e" position="3.5 1 0"></a-box>
+      <a-box width="5.5" height="5" depth="0.5" color="#4f000e" position="-14 1 0"></a-box>
+      <a-box width="5.5" height="5" depth="0.5" color="#4f000e" position="-14 1 7"></a-box>
+      <a-box width="5" height="5" depth="0.5" color="#4f000e" rotation="0 90 0" position="-1.5 1 2.25"></a-box>
+      <a-box width="8" height="5" depth="0.5" color="#4f000e" rotation="0 90 0" position="-1.5 1 12"></a-box>
+      
+      <!-- Kast -->
+      <a-box static-body width="2" height="0.1" depth="0.8" position="6.5 0.2 -3.5" rotation="0 90 0" color="#195fd1"></a-box>
+      <a-box static-body width="2" height="0.1" depth="0.8" position="6.5 0.9 -3.5" rotation="0 90 0" color="#195fd1"></a-box>
+      <a-box static-body width="2" height="0.1" depth="0.8" position="6.5 1.6 -3.5" rotation="0 90 0" color="#195fd1"></a-box>
+      <a-box width="2" height="0.1" depth="0.8" position="6.5 2.3 -3.5" rotation="0 90 0" color="#195fd1"></a-box>
+      <a-box width="3.1" height="0.1" depth="0.8" position="6.5 0.8 -2.5" rotation="0 90 90" color="#0e4193"></a-box>
+      <a-box width="3.1" height="0.1" depth="0.8" position="6.5 0.8 -4.5" rotation="0 90 90" color="#0e4193"></a-box>
+      <a-box width="2" height="0.1" depth="2.7" position="6.8 1 -3.5" rotation="90 90 0" color="#0e4193"></a-box>
+      
+      
+      <!-- Cow Pen -->
+      <a-box width="0.3" height="1.5" depth="1.5" color="#592a0f" position="-1.6 0.5 -1.2"></a-box>
+      <a-box width="0.3" height="3.5" depth="0.2" color="#421e09" position="-1.6 1.75 -0.35"></a-box>
+      <a-box width="0.3" height="3.5" depth="0.2" color="#421e09" position="-1.6 1.75 -2.05"></a-box>
+      
+      <a-box width="0.3" height="1.5" depth="1.5" color="#592a0f" position="1.6 0.5 -1.2"></a-box>
+      <a-box width="0.3" height="3.5" depth="0.2" color="#421e09" position="1.6 1.75 -0.35"></a-box>
+      <a-box width="0.3" height="3.5" depth="0.2" color="#421e09" position="1.6 1.75 -2.05"></a-box>
+      
+      <a-box width="0.3" height="6.5" depth="0.2" color="#421e09" rotation="90 0 0" position="-1.6 3.4 -3.5"></a-box>
+      
+      <!-- Boer -->
+       <a-entity scale="1 1.4 1.2" obj-model="obj: #boer-obj; mtl: #boer-mtl;" position="-13 -5 4.5" rotation="0 -75 0"></a-entity> 
+      <a-entity id="hand" scale="1 1.4 1.2" obj-model="obj: #hand-obj; mtl: #hand-mtl;" position="-13 -5 4.5" rotation="0 -75 0"> 
+      </a-entity> 
+      
+      <!-- Boven Balkon -->
+      <a-entity static-body scale="1 1.75 1" obj-model="obj: #trap-obj; mtl: #trap-mtl" position="-6.5 0.3 -5" rotation="0 -90 0" material="color: red"></a-entity>
+      <a-box width="0.2" height="" depth="0.2" position="-6.5 0.8 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="" depth="0.2" position="-7 1.2 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="" depth="0.2" position="-7.5 1.5 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="" depth="0.2" position="-8 2 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="1.2" depth="0.2" position="-8.5 2.2 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="" depth="0.2" position="-9 2.7 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="" depth="0.2" position="-9.5 3 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="1.4" depth="0.2" position="-10 3.1 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="1.4" depth="0.2" position="-10.5 3.4 -3.5" color="#200700"></a-box>
+      <a-box width="0.2" height="1.3" depth="0.2" position="-11 3.8 -3.5" color="#200700"></a-box>
+       <a-box width="0.2" height="6.5" depth="0.5" position="-8.75 3 -3.5" color="#0d0500" rotation="0 0 55"></a-box>
+      <a-entity static-body scale="0.4 0.4 0.810" obj-model="obj: #hek-obj; mtl: #hek-mtl" position="-11.3 3.5 5.990"></a-entity>
+      <a-box static-body width="7" height="0.4" depth="22" position="-14.7 3.4 4" color="#512f14"></a-box>
+      <a-box static-body width="9" height="0.4" depth="22" position="2.7 3.4 4" color="#512f14"></a-box>
+      
+      <!-- Hooi balen -->
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-13 4 13"></a-entity>
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-13 4.75 13"></a-entity>
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-14 4 13"></a-entity>
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-14 4.75 13"></a-entity>
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-13 4 11"></a-entity>
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-13 4.75 11"></a-entity>
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-14 4 11"></a-entity>
+      <a-entity class="pickableItem" static-body scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-14 4.75 11"></a-entity>
+      
+      <!-- Tractor -->
+      <a-entity id="performance1">
+      <a-entity id="tractor" scale="8 8 8" obj-model="obj: #tractor-obj; mtl: #tractor-mtl;" position="-13 1.7 -1.8" rotation="0 120 0"></a-entity> 
+      <a-entity class="pickableItem" scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-15 0.1 -5"></a-entity>
+      <a-entity class="pickableItem" scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-13.5 0.1 -5"></a-entity>
+      <a-entity class="pickableItem" scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-15 0.85 -5"></a-entity>
+      <a-entity class="pickableItem" scale="0.8 0.8 0.8" obj-model="obj: #haybale-obj; mtl: #haybale-mtl" position="-13.5 0.85 -5"></a-entity>
+      <a-entity scale="1.8 1.8 1.8" obj-model="obj: #barrel-obj; mtl: #barrel-mtl;" position="-12 0.8 -5.5"></a-entity>
+      <a-entity scale="1.8 1.8 1.8" obj-model="obj: #barrel-obj; mtl: #barrel-mtl;" position="-12 0.8 -4"></a-entity>
+      </a-entity>
+            
+      <!-- Particle System aka koe melken -->
+      <a-entity>
+        <a-box id="doos" visible="false" class="pickableItem" mixin="koe-melk" color="blue" scale="0.3 0.3 0.3" position="0.2 0.85 -1.1"
+               spe-particles="enabled: false; texture: /Plaatjes/blob.png; particleCount: 50; maxAge: 1; acceleration: 0 -2 0; relative: world"></a-box>
+      </a-entity>
+      <!-- Emmer -->
+      <a-entity id="bucket" class="pickableItem" mixin="emmer-obj" position="6.5 1.1 -3.5" obj-model="obj: #emmer-obj; mtl: #emmer-mtl" scale="1 1 1" rotation="0 0 0">
+      <a-animation attribute="rotation"
+                   dur="3000"
+                   begin="bucketRotatie"
+                   easing="linear"
+                   to="0 0 90">
+      </a-animation>
+        <a-animation attribute="position"
+                   dur="1"
+                   begin="bucketRotatie"
+                   delay="5500"
+                   from="-1 1.5 3"
+                   to="6.5 1.1 -3"></a-animation>
+        <a-animation attribute="rotation"
+                   dur="1"
+                   begin="bucketRotatie"
+                   delay="5500"
+                   to="0 180 0">
+        </a-animation>
+        <a-cylinder id="melk" visible="false" height="0.05" radius="0.18" position="0 -0.1 -0.05"                 
+                    animation__position="property: position; dir: normal; dur: 3000;
+                                 easing: easeInSine; loop: false; to: 0 0.17 -0.05; 
+                                 startEvents: melkPositie; pauseEvents: pauzePositie; resumeEvents: resumePositie"
+                    animation__radius="property: radius; dir: normal; dur: 3000;
+                                       easing: easeInSine; loop: false; to: 0.21; 
+                                       startEvents: melkRadius; pauseEvents: pauzeRadius; resumeEvents: resumeRadius"></a-cylinder>
+      </a-entity>
+      <a-entity id="waterbucket" class="pickableItem" mixin="emmer-obj" position="3.5 0.4 1" obj-model="obj: #emmer-obj; mtl: #emmer-mtl" scale="1 1 1" rotation="0 0 0">
+         <a-animation attribute="rotation"
+                   dur="3000"
+                   begin="wbucketRotatie"
+                   easing="linear"
+                   to="0 0 90">
+        </a-animation>                 
+        <a-cylinder id="water" visible="true" color="blue" opacity="0.7" height="0.05" radius="0.21" position="0 0.17 -0.05"></a-cylinder>
+        <a-animation attribute="position"
+                     dur="1"
+                     begin="wbucketRotatie"
+                     delay="5500"
+                     to="6.4 1.78 -3.9"></a-animation>
+        <a-animation attribute="rotation"
+                   dur="1"
+                   begin="wbucketRotatie"
+                   delay="5500"
+                   to="0 180 0">
+        </a-animation>
+      </a-entity>
+      <!-- Koe -->
+      <a-entity static-body visible="true" position="0.5 0.6 -1.1" rotation="0 90 0" scale="0.6 0.6 0.6" obj-model="obj: #cow-obj"></a-entity>
+      <!-- Cirkel onder de koe -->
+      <a-cylinder id="eventcylinder" class="pickableItem" color="blue" height="0.1" radius="0.3" position="0.2 0.2 -1.1" ></a-cylinder>
+      <!-- De uier -->
+      <a-entity id="uier" class="pickableItem" mixin="uier-obj" position="0.2 0.6 -3.75" obj-model="obj: #uier-obj" scale="0.6 0.6 0.6" material="color: pink"></a-entity>
+
+      
+      <!-- Machine ruimte -->
+      <!-- Wrongelvork -->
+      <a-entity id="wrongel" position="2 1.9 1" scale="0.15 0.2 0.15" obj-model="obj: #wrongelvork-obj; mtl: #wrongelvork-mtl">
+                  <a-animation attribute="rotation"
+                   dur="3000"
+                   begin="wrongela"
+                   to="0 360 0"
+                   easing="linear"
+                   repeat= "3">
+          </a-animation>
+          <a-animation attribute="position"
+                   delay="10000"
+                   dur="2000"
+                   begin="up"
+                   from="2 0.8 1"
+                   to="2 1.9 1"
+                   easing="linear"
+                   >
+          </a-animation>
+          <a-animation attribute="position"
+                   dur="3000"
+                   begin="down"
+                   from="2 1.9 1"
+                   to="2 0.8 1"
+                   easing="linear"
+                   >
+          </a-animation>
+      </a-entity>
+      <a-cylinder radius="0.2" height="2" position="2 3.9 1" color="gray"></a-cylinder>
+      <!-- OnOff knop -->
+      <a-entity id="start" class="pickableItem" position="0.9 1 0.3" rotation="0 -90 0" scale="0.2 0.2 0.2" obj-model="obj: #onoff-obj; mtl: #onoff-mtl">
+      <a-animation attribute="position"
+                   begin="emmerOp"
+                   from="1 1 -1.5"
+                   to="1 2 -1.5"
+                   easing="linear">
+      </a-animation>
+      <a-animation attribute="rotation"
+                   to="0 0 60"
+                   easing="linear"
+                   begin="emmerRo"
+                   delay="8000"
+                   >
+      </a-animation>
+      <a-animation attribute="position"
+                   from="1 2 -1.5"
+                   to="0.5 2 -1.5"
+                   easing="linear"
+                   begin="emmerLi"
+                   delay="3000"
+                   >
+      </a-animation>
+      <a-entity id="indicator" hoverable visible="false" position="0 6.5 0.2" geometry="primitive:octahedron;radius:0.43" material="color:#57bbed;width:300"
+                animation__rotation="property: rotation; dir: forward; dur: 3300;
+                easing: linear; loop: true; to: 0 360 0"
+                animation="property: position; dir: alternate; dur: 2000;
+                easing: easeInSine; loop: true; to: 0 4.5 0"
+      ></a-entity>
+      </a-entity>
+      <!--Kaastobbe -->
+      <a-entity class="pickableItem" id="kaastobbe" position="2 0 1" scale="0.7 0.7 0.7" obj-model="obj: #tobbebruin-obj; mtl: #tobbebruin-mtl">
+        <a-box id="doos2" visible="false" class="pickableItem" mixin="koe-melk" color="blue" scale="0.3 0.3 0.3" position="0.5 2.5 0.5"
+               spe-particles="enabled: false; texture: Plaatjes/blob.png; delay:0; particleCount: 50; maxAge: 1; acceleration: -1.1 -3 0; relative: world"></a-box>
+        <a-box id="doos3" visible="false" class="pickableItem" mixin="koe-melk" color="blue" scale="0.3 0.3 0.3" position="0.5 2.5 0.5"
+               spe-particles="enabled: false; texture: Plaatjes/blueblob.png; delay:0; particleCount: 50; maxAge: 1; acceleration: -1.1 -3 0; relative: world"></a-box>
+              <a-ocean
+        width="1.4"
+        depth="1.4"
+        density="2"
+        color="#d9d0ae"
+        position="0 1 0"
+        opacity="1"
+        speed="0.1"
+        speedvariance="0.1"
+        id="oceaan">
+        <a-animation attribute="position"
+                     from="0 1 0"
+                     to="0 1.65 0"
+                     dur="7000"
+                     begin="melk"
+                     easing="linear"
+                     >
+        </a-animation>
+        <a-animation attribute="position"
+                     from="0 1.65 0"
+                     to="0 1 0"
+                     dur="5000"
+                     delay="10000"
+                     begin="stil"
+                     easing="linear">
+        </a-animation>
+        </a-ocean>
+            <a-entity id="indicator2" hoverable visible="false" position="0 2.5 0.2" geometry="primitive:octahedron;radius:0.23" material="color:#57bbed;width:300"
+                animation__rotation="property: rotation; dir: forward; dur: 3300;
+                easing: linear; loop: true; to: 0 360 0"
+                animation="property: position; dir: alternate; dur: 2000;
+                easing: easeInSine; loop: true; to: 0 1.5 0"
+      ></a-entity>
+      </a-entity>
+      <a-plane id="melkgieten" class="pickableItem" src="Plaatjes/Bucket-Milk-icon.png" position="1.5 1 2" width="0.25" height="0.25" depth="0.25" color="white" visible="false">
+                 <a-entity id="indicator5" visible="true" position="0 1 0" geometry="primitive:octahedron;radius:0.13" material="color:#57bbed;width:300"
+                animation__rotation="property: rotation; dir: forward; dur: 3300;
+                easing: linear; loop: true; to: 0 360 0"
+                animation="property: position; dir: alternate; dur: 2000;
+                easing: easeInSine; loop: true; to: 0 0.3 0"
+      ></a-entity></a-plane>
+      <a-plane id="watergieten" class="pickableItem" src="Plaatjes/Water-bucket.png" position="2 1 2" width="0.25" height="0.25" depth="0.25" visible="false">
+                     <a-entity visible="true" position="0 1 0" geometry="primitive:octahedron;radius:0.13" material="color:#57bbed;width:300"
+                animation__rotation="property: rotation; dir: forward; dur: 3300;
+                easing: linear; loop: true; to: 0 360 0"
+                animation="property: position; dir: alternate; dur: 2000;
+                easing: easeInSine; loop: true; to: 0 0.3 0"
+      ></a-entity></a-plane>
+      <a-plane id="stremselgieten" class="pickableItem"  src="Plaatjes/Stremselfles.png" position="2.5 1 2" width="0.25" height="0.25" depth="0.25" visible="false">
+                <a-entity visible="true" position="0 1 0" geometry="primitive:octahedron;radius:0.13" material="color:#57bbed;width:300"
+                animation__rotation="property: rotation; dir: forward; dur: 3300;
+                easing: linear; loop: true; to: 0 360 0"
+                animation="property: position; dir: alternate; dur: 2000;
+                easing: easeInSine; loop: true; to: 0 0.3 0"
+      ></a-entity></a-plane> 
+      <!-- Plank met objecten -->
+      <a-entity id="stremselfles" class="pickableItem" static-body scale="0.5 0.5 0.5" position="-1 1.5 3" obj-model="obj: #fles-obj; mtl: #fles-mtl">
+      <a-animation attribute="rotation"
+                   dur="2000"
+                   begin="flesRotatie"
+                   easing="linear"
+                   to="0 0 90">
+      </a-animation>
+      <a-animation attribute="position"
+                   dur="1"
+                   begin="flesRotatie"
+                   delay="5000"
+                   from="-1 1.5 3"
+                   to="6.5 0.95 -3.5"></a-animation>
+        <a-animation attribute="rotation"
+                   dur="1"
+                   begin="flesRotatie"
+                   delay="5000"
+                   to="0 180 0"></a-animation>
+      </a-entity>
+      <a-box static-body width="0.5" depth="1.7" height="0.1" position="-1 1.5 3" color="yellow"></a-box>
+      
+      <!--Kaaspers entities -->
+      <a-entity id="kaaspers" scale="0.2 0.2 0.2" obj-model="obj: #kaaspers-obj; mtl: #kaaspers-mtl" position="6 1.7 6.5">
+      <a-animation attribute="position"
+                   dur="2250"
+                   begin="persen"
+                   from="6 1.7 6.5"
+                   to="6 1.42 6.5"
+                   easing="linear">
+      </a-animation>
+      <a-animation attribute="position"
+                   dur="2250"
+                   begin="persen"
+                   from="6 1.42 6.5"
+                   to="6 1.7 6.5"
+                   delay="7000"
+                   easing="linear">
+      </a-animation>      
+      </a-entity>
+      <a-entity id="persbank" class="pickableItem" scale="0.5 0.4 0.5" obj-model="obj: #persbank-obj; mtl: #persbank-mtl" position="6 0 6.5" rotation="0 0 0">
+            <a-entity id="indicator3" hoverable visible="false" position="0 4 0" geometry="primitive:octahedron;radius:0.23" material="color:#57bbed;width:300"
+                animation__rotation="property: rotation; dir: forward; dur: 3300;
+                easing: linear; loop: true; to: 0 360 0"
+                animation="property: position; dir: alternate; dur: 2000;
+                easing: easeInSine; loop: true; to: 0 3.2 0"
+      ></a-entity></a-entity>   
+      <a-entity class="pickableItem" id="persknop" scale="0.1 0.1 0.1" obj-model="obj: #start-obj; mtl: #start-mtl" position="5.3 0.82 6.5" rotation="0 180 0"></a-entity>  
+      <a-box id="scharnier" depth="0.04" width="1.9" height="0.04" color="gray" rotation="0 90 0" position="6 2 6.5">
+      <a-animation attribute="position"
+                   dur="2250"
+                   begin="scharnier"
+                   from="6 2 6.5"
+                   to="6 1.72 6.5"
+                   easing="linear">
+      </a-animation>  
+      <a-animation attribute="position"
+                   dur="2250"
+                   delay="7000"
+                   begin="scharnier"
+                   from="6 1.72 6.5"
+                   to="6 2 6.5"
+                   easing="linear">
+      </a-animation> 
+    </a-box>
+      
+      <!-- droogrek -->
+      <a-entity id="droogrek" scale="0.4 0.4 0.4" obj-model="obj: #droogrek-obj; mtl: #droogrek-mtl" position="-14 0 14" rotation="0 90 0"></a-entity>
+      <a-entity id="droogrek2" scale="0.4 0.4 0.4" obj-model="obj: #droogrekmissend-obj; mtl: #droogrekmissend-mtl" position="-14 0 11" rotation="0 90 0"></a-entity>
+      <a-entity id="droogrek3" scale="0.4 0.4 0.4" obj-model="obj: #droogrek-obj; mtl: #droogrek-mtl" position="-14 0 8" rotation="0 90 0"></a-entity> 
+      
+      <a-entity id="kaas" class="pickableItem" position="-12.75 0.25 10.5" scale="0.4 0.4 0.4" obj-model="obj: #kaas-obj; mtl: #kaas-mtl" visible="false"></a-entity>
+      
+      <!-- kaasvat -->      
+      <a-entity class="pickableItem" id="kaasvat" scale="0.3 0.3 0.3" obj-model="obj: #kaasvat-obj; mtl: #kaasvat-mtl" position="-1 1.55 2.5">
+        <a-animation attribute="position"
+                     dur="1"
+                     begin="kast"
+                     delay="100"
+                     to="6.4 0.25 -3.5"></a-animation>
+      <a-cylinder id="kaasstremsel" position="0 1 0" visible="false" height="1" radius="0.8" color="#d9d0ae">
+        <a-animation attribute="position"
+                     delay="750"
+                     dur="3000"
+                     begin="pekelen"
+                     from="2.5 1 13.5"
+                     to="2.5 0.5 13.5"
+                     easing="linear"
+                     >
+        </a-animation>
+        <a-animation attribute="position"
+                     delay="6500"
+                     dur="3000"
+                     begin="pekelen"
+                     from="2.5 0.5 13.5"
+                     to="2.5 1 13.5"
+                     easing="linear"
+                     >
+        </a-animation>
+        <a-animation attribute="position"
+                     delay="1000"
+                     dur="1200"
+                     begin="persstremsel"
+                     from="0 1 0"
+                     to="0 0.5 0"
+                     easing="linear">
+        </a-animation>
+        </a-cylinder>
+      <a-animation attribute="position"
+                   delay="750"
+                     dur="3000"
+                     begin="pekelen"
+                     from="2.5 0.9 13.5"
+                     to="2.5 0.5 13.5"
+                     easing="linear"
+                     >
+        </a-animation>
+        <a-animation attribute="position"
+                     delay="6500"
+                     dur="3000"
+                     begin="pekelen"
+                     from="2.5 0.5 13.5"
+                     to="2.5 0.9 13.5"
+                     easing="linear"
+                     >
+        </a-animation>
+        
+      
+      </a-entity>
+      
+      <!-- pekelbad -->
+      <a-entity id="pekelbad" scale="0.6 0.4 0.6" obj-model="obj: #pekelbad-obj; mtl: #pekelbad-mtl" position="2.5 0.2 13.5" rotation="0 90 0">
+                    <a-entity id="indicator4" hoverable visible="false" position="0 4.5 0" geometry="primitive:octahedron;radius:0.23" material="color:#57bbed;width:300"
+                animation__rotation="property: rotation; dir: forward; dur: 3300;
+                easing: linear; loop: true; to: 0 360 0"
+                animation="property: position; dir: alternate; dur: 2000;
+                easing: easeInSine; loop: true; to: 0 2.5 0"
+      ></a-entity>
+      </a-entity>
+      <a-entity id="kaaspers2" class="pickableItem" scale="0.2 0.2 0.2" obj-model="obj: #kaaspers-obj; mtl: #kaaspers-mtl" position="2.5 1 13.5" rotation="0 0 180">
+        <a-animation attribute="position"
+                     delay="750"
+                     dur="3000"
+                     begin="pekelen"
+                     from="2.5 1 13.5"
+                     to="2.5 0.4 13.5"
+                     easing="linear"
+                     >
+        </a-animation>
+        <a-animation attribute="position"
+                     delay="6500"
+                     dur="3000"
+                     begin="pekelen"
+                     from="2.5 0.4 13.5"
+                     to="2.5 1 13.5"
+                     easing="linear"
+                     >
+        </a-animation>
+      </a-entity>
+      <a-box color="#ffff99" width="3.35" height="1" depth="1.4" position="2.5 0.3 13.5" opacity="0.5"></a-box>
+      <a-entity class="pickableItem" id="pekelknop" scale="0.15 0.15 0.15" obj-model="obj: #start-obj; mtl: #start-mtl" position="1.3 0.25 12.65" rotation="0 90 0"></a-entity>
+      <a-cylinder id="eventkaas" class="pickableItem" color="blue" height="0.05" radius="0.3" position="-12.75 0.6 10.5" ></a-cylinder>
+      
+      <!-- handleidingbord -->
+      <a-entity id="handleidingbord" scale="0.6 0.6 0.6" obj-model="obj: #handleiding-obj; mtl: #handleiding-mtl" position="-15.1 0.1 4.5" rotation="0 0 0"></a-entity>
+      <a-image src="Plaatjes/map.png" rotation="0 90 180" position="-15 1.8 3.25" width="2.3" height="1.4"></a-image>
+      
+      <!-- De box met de button -->
+      <a-entity id="checkpoints" visible="false" position="1 0 1">
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="-5.7 0.3 -5.5" color="#39BB82"></a-cylinder>
+        <!--<a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="1" position="-13 3.9 -5.5" color="#39BB82"></a-cylinder> -->
+        <!--<a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="1" position="-13 3.9 2.5" color="#39BB82"></a-cylinder> -->
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="-13 0.3 2.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="-5.7 0.3 5.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="-1 0.3 -4.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="3 0.3 -4.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="-1 0.3 5.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="2.5 0.3 5.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="1 0.3 9.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="1 0.3 2.5" color="#39BB82"></a-cylinder>
+        <a-cylinder class="pickableItem" checkpoint mixin="checkpoint" radius="0.6" height="0.1" position="-11 0.3 10" color="#39BB82"></a-cylinder>
+      </a-entity>
+      <!-- ground collider keeps objects from falling -->
+      <a-plane id="player" position="0 1 -4"></a-plane>
+      <a-box position="0 0.2 0" color="#635833" static-body width="100" height="0.001" depth="100" visible="true"></a-box>
+    </a-scene>
+  </body>
+</html>
